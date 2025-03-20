@@ -1,6 +1,7 @@
 async function api_request(){
     const gifAttente = document.getElementById('bloc-gif-attente');
     gifAttente.style.display = 'block';
+    const blocResultats = document.getElementById('bloc-resultats');
 
     let research=document.getElementById('research_bar').value;
     const specialChars = /[^a-zA-Z0-9]/g; 
@@ -20,10 +21,13 @@ async function api_request(){
         gifAttente.style.display = 'none';
         if(formatedResult.length>0){
             console.log(formatedResult[0].name);
-            document.getElementById("bloc-resultats").textContent =formatedResult[0].name;
+            for(let i=0; i<formatedResult.length;i++){
+                blocResultats.innerHTML += '<p class="res">'+formatedResult[i].name+'</p>';
+            }
+            //document.getElementById("bloc-resultats").textContent =formatedResult[0].name;
         }
         else{
-            document.getElementById("bloc-resultats").textContent ="(Aucun résultat trouvé)";
+            blocResultats.innerHTML += '<p class="info-vide">(Aucun résultat trouvé)</p>';
         }
         console.log(result);
     }else{
