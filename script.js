@@ -1,7 +1,9 @@
 async function api_request(){
+    const blocResultats = document.getElementById('bloc-resultats');
+    blocResultats.innerHTML = '';
     const gifAttente = document.getElementById('bloc-gif-attente');
     gifAttente.style.display = 'block';
-    const blocResultats = document.getElementById('bloc-resultats');
+    
 
     let research=document.getElementById('research_bar').value;
     const specialChars = /[^a-zA-Z0-9]/g; 
@@ -24,7 +26,6 @@ async function api_request(){
             for(let i=0; i<formatedResult.length;i++){
                 blocResultats.innerHTML += '<p class="res">'+formatedResult[i].name+'</p>';
             }
-            //document.getElementById("bloc-resultats").textContent =formatedResult[0].name;
         }
         else{
             blocResultats.innerHTML += '<p class="info-vide">(Aucun résultat trouvé)</p>';
@@ -33,7 +34,7 @@ async function api_request(){
     }else{
         gifAttente.style.display = 'none';
 
-        document.getElementById("bloc-resultats").textContent ="Erreur lors de la recherche";
+        blocResultats.innerHTML += '<p class="info-vide">(Erreur lors de la recherche)</p>';
     }
 
 }
