@@ -1,4 +1,7 @@
 async function api_request(){
+    const gifAttente = document.getElementById('bloc-gif-attente');
+    gifAttente.style.display = 'block';
+
     let research=document.getElementById('research_bar').value;
     const specialChars = /[^a-zA-Z0-9]/g; 
     if(research.match(specialChars)){
@@ -9,17 +12,24 @@ async function api_request(){
     const url = 'https://api.api-onepiece.com/v2/characters/fr/search/?name='+research;
     const response = await fetch(url);
     const result = await response.text();
-    let formatedResult=JSON.parse(result);
-    console.log(formatedResult);
-    console.log(formatedResult[0].name);
-    console.log(typeof(formatedResult))
-    document.getElementById("bloc-resultats").textContent =formatedResult[0].name;
-    document.getElementById("image-perso").textContent =formatedResult[0].name;
+    if(response.ok){
+        let formatedResult=JSON.parse(result);
+        console.log(formatedResult);
+        console.log(typeof(formatedResult))
 
+        gifAttente.style.display = 'none';
+        if(formatedResult.length>0){
+            console.log(formatedResult[0].name);
+            document.getElementById("bloc-resultats").textContent =formatedResult[0].name;
+        }
+        else{
+            document.getElementById("bloc-resultats").textContent ="(Aucun résultat trouvé)";
+        }
+        console.log(result);
+    }else{
+        gifAttente.style.display = 'none';
 
-    fetch(url)
-    .then(response => response.json())
-    .catch(err => console.error(err));
+        document.getElementById("bloc-resultats").textContent ="Erreur lors de la recherche";
+    }
 
-    console.log(result);
 }
