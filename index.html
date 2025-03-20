@@ -5,6 +5,7 @@
     <meta charset="utf-8" />
     <link rel="shortcut icon" type="image/x-icon" href="favicon-js.ico" />
     <link rel="stylesheet" href="styles.css" />
+    <script src="script.js"></script>
   </head>
 
   <body>
@@ -26,7 +27,7 @@
       <section id="section-recherche">
         <div id="bloc-recherche">
           <!-- Champ de recherche -->
-          <input type="text" placeholder="Que cherchez-vous ?" />
+          <input type="text" id="research_bar" placeholder="Que cherchez-vous ?" value="luffy" />
 
           <!-- Boutons -->
           <button
@@ -34,6 +35,7 @@
             type="button"
             class="btn_clicable"
             title="Lancer la recherche"
+            onclick="api_request()"
           >
             <!-- Icone Loupe (provenant de flaticon.com) -->
             <img src="images/loupe.svg" alt="Loupe pour recherche" width="22" />
