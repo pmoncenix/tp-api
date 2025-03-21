@@ -1,11 +1,11 @@
-async function api_request(){
+async function api_request(param=document.getElementById('research_bar').value){
     const blocResultats = document.getElementById('bloc-resultats');
     blocResultats.innerHTML = '';
     const gifAttente = document.getElementById('bloc-gif-attente');
     gifAttente.style.display = 'block';
     
 
-    let research=document.getElementById('research_bar').value;
+    let research=param;
     const specialChars = /[^a-zA-Z0-9]/g; 
     if(research.match(specialChars)){
         research.replace(specialChars, (char) => {
@@ -13,30 +13,62 @@ async function api_request(){
           });
     }
     const url = 'https://api.api-onepiece.com/v2/characters/fr/search/?name='+research;
-    const response = await fetch(url);
-    const result = await response.text();
-    if(response.ok){
-        let formatedResult=JSON.parse(result);
-        console.log(formatedResult);
-        console.log(typeof(formatedResult))
-
-        gifAttente.style.display = 'none';
-        if(formatedResult.length>0){
-            console.log(formatedResult[0].name);
-            for(let i=0; i<formatedResult.length;i++){
-                blocResultats.innerHTML += '<p class="res">'+formatedResult[i].name+'</p>';
+    try{
+        const response = await fetch(url);
+        const result = await response.text();
+        if(response.ok){
+            let formatedResult=JSON.parse(result);
+            console.log(formatedResult);
+            console.log(typeof(formatedResult))
+    
+            gifAttente.style.display = 'none';
+            if(formatedResult.length>0){
+                console.log(formatedResult[0].name);
+                for(let i=0; i<formatedResult.length;i++){
+                    blocResultats.innerHTML += '<p class="res">'+formatedResult[i].name+'</p>';
+                }
             }
+            else{
+                blocResultats.innerHTML += '<p class="info-vide">(Aucun résultat trouvé)</p>';
+            }
+            console.log(result);
+        }else{
+            gifAttente.style.display = 'none';
+    
+            blocResultats.innerHTML += '<p class="info-vide">(Erreur lors de la recherche)</p>';
         }
-        else{
-            blocResultats.innerHTML += '<p class="info-vide">(Aucun résultat trouvé)</p>';
-        }
-        console.log(result);
-    }else{
+    }catch{
         gifAttente.style.display = 'none';
-
         blocResultats.innerHTML += '<p class="info-vide">(Erreur lors de la recherche)</p>';
     }
 
+
+}
+
+function addFavoris(){
+    console.log("addFavortis()");
+    const research_bar=document.getElementById('research_bar');
+    if(localStorage.getItem(research_bar.value)==null){
+        localStorage.setItem(research_bar.value,research_bar.value);
+        const liste_favoris=document.getElementById('liste-favoris');
+        liste_favoris.innerHTML += '<li id='+research_bar.value+'><span title="Cliquer pour relancer la recherche" onclick="api_request(this.textContent)">'+research_bar.value+'</span><img src="images/croix.svg" alt="Icone pour supprimer le favori" width="15" title="Cliquer pour supprimer le favori" onclick="deleteFavoris(this.parentNode.querySelector(\'span\').textContent)"/>';
+    }
+}
+
+function deleteFavoris(favoris){
+    console.log(favoris);
+    const htmlFavoris=document.getElementById(favoris);
+    htmlFavoris.remove();
+    localStorage.removeItem(favoris);
+}
+
+function loadFavoris(){
+    const liste_favoris=document.getElementById('liste-favoris');
+    Object.keys(localStorage).forEach(function(key) {
+        const value = localStorage.getItem(key);
+        liste_favoris.innerHTML += '<li id='+value+'><span title="Cliquer pour relancer la recherche" onclick="api_request(this.textContent)">'+value+'</span><img src="images/croix.svg" alt="Icone pour supprimer le favori" width="15" title="Cliquer pour supprimer le favori" onclick="deleteFavoris(this.parentNode.querySelector(\'span\').textContent)"/>';
+        console.log(`Clé : ${key}, Valeur : ${value}`);
+    });
 }
 
 function createBubble() {

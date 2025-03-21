@@ -8,11 +8,11 @@
     <script src="script.js"></script>
   </head>
 
-  <body>
+  <body onload="loadFavoris()">
     <div id="bubble-container"></div>
     <header>
       <div class="header-top">
-        <img src="/images/logo_API.png" alt="Logo One Piece" class="Logo" draggable="false">
+        <img src="images/logo_API.png" alt="Logo One Piece" class="Logo" draggable="false">
         <h1>Recherche d'informations sur One Piece</h1>
       </div>
       
@@ -48,8 +48,9 @@
           <button
             id="btn-favoris"
             type="button"
-            disabled
             title="Ajouter la recherche aux favoris"
+            onclick="addFavoris()"
+
           >
             <!-- Icone étoile vide
 							(qui indique que la recherche ne fait pas partie des favoris) -->
@@ -85,33 +86,6 @@
           Cliquer sur une recherche favorite ci-dessus pour relancer celle-ci :
         </p>
         <ul id="liste-favoris">
-          <li>
-            <span title="Cliquer pour relancer la recherche">Grenoble</span>
-            <img
-              src="images/croix.svg"
-              alt="Icone pour supprimer le favori"
-              width="15"
-              title="Cliquer pour supprimer le favori"
-            />
-          </li>
-          <li>
-            <span title="Cliquer pour relancer la recherche">Lyon</span>
-            <img
-              src="images/croix.svg"
-              alt="Icone pour supprimer le favori"
-              width="15"
-              title="Cliquer pour supprimer le favori"
-            />
-          </li>
-          <li>
-            <span title="Cliquer pour relancer la recherhe.">Web</span>
-            <img
-              src="images/croix.svg"
-              alt="Icone pour supprimer le favori"
-              width="15"
-              title="Cliquer pour supprimer le favori"
-            />
-          </li>
         </ul>
         <p class="info-vide">(Aucune recherche favorite)</p>
       </section>
