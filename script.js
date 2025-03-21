@@ -38,3 +38,23 @@ async function api_request(){
     }
 
 }
+
+function createBubble() {
+    const bubble = document.createElement("div");
+    bubble.classList.add("bubble");
+
+    const size = Math.random() * 30 + 10;
+    bubble.style.width = `${size}px`;
+    bubble.style.height = `${size}px`;
+
+    bubble.style.left = `${Math.random() * 100}vw`;
+    bubble.style.animationDuration = `${Math.random() * 3 + 4}s`; // DUrée des bulles
+
+    document.getElementById("bubble-container").appendChild(bubble);
+
+    // Suppression des bulles
+    setTimeout(() => bubble.remove(), 7000);
+}
+
+// Création de bulles en continu
+setInterval(createBubble, 1000);

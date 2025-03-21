@@ -16,7 +16,7 @@
 }
 
 body {
-  background-color: var(--background);
+  background: url(/images/fond_API.png);
   font: 14pt Roboto, Arial, sans-serif;
   margin: 0;
   padding: 0;
@@ -39,6 +39,22 @@ h1 {
 
 #explication {
   font-size: 1.2em;
+}
+
+header {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+}
+
+.header-top {
+  display: flex;
+  gap: 150px;
+}
+
+.Logo {
+  width: 300px;
+  height: auto;
 }
 
 /* Conteneur principal */
@@ -164,5 +180,35 @@ h1 {
 
   #section-favoris {
     flex: 0;
+  }
+}
+
+#bubble-container {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  z-index: -1;
+}
+
+.bubble {
+  position: absolute;
+  background: radial-gradient(#0080ff, #0080ff 10%, rgba(153, 255, 255, 0) 56%);
+  border-radius: 50%;
+  opacity: 0;
+  animation: rise 6s infinite ease-in-out;
+}
+
+@keyframes rise {
+  0% {
+    transform: translateY(100vh) scale(0.5);
+    opacity: 0;
+  }
+  50% {
+    opacity: 0.8;
+  }
+  100% {
+    transform: translateY(-10vh) scale(1.2);
+    opacity: 0;
   }
 }
