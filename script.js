@@ -1,48 +1,43 @@
-async function api_request(param=document.getElementById('research_bar').value){
+async function api_request_character(way='name',param=document.getElementById('research_bar').value){
+    const specialChars = /[^a-zA-Z0-9]/g; 
+    if(param.match(specialChars)){
+        param.replace(specialChars, (char) => {
+            return `(${char.charCodeAt(0)})`;  // Remplace le caractère spécial par son code ASCII
+          });
+    }
+    let url=''
+    if(way=='id'){
+        url ='https://api.api-onepiece.com/v2/characters/fr/'+param;
+    }else{
+        url = 'https://api.api-onepiece.com/v2/characters/fr/search/?'+way+'='+param;
+    }
+    try{
+        const response = await fetch(url);
+        const result = await response.text();
+        let formatedResult=JSON.parse(result);
+        return formatedResult;
+    }catch{
+        return 0;
+    }
+}
+
+async function api_request(){
     const blocResultats = document.getElementById('bloc-resultats');
     blocResultats.innerHTML = '';
     const gifAttente = document.getElementById('bloc-gif-attente');
     gifAttente.style.display = 'block';
-    
-
-    let research=param;
-    const specialChars = /[^a-zA-Z0-9]/g; 
-    if(research.match(specialChars)){
-        research.replace(specialChars, (char) => {
-            return `(${char.charCodeAt(0)})`;  // Remplace le caractère spécial par son code ASCII
-          });
-    }
-    const url = 'https://api.api-onepiece.com/v2/characters/fr/search/?name='+research;
-    try{
-        const response = await fetch(url);
-        const result = await response.text();
-        if(response.ok){
-            let formatedResult=JSON.parse(result);
-            console.log(formatedResult);
-            console.log(typeof(formatedResult))
-    
-            gifAttente.style.display = 'none';
-            if(formatedResult.length>0){
-                console.log(formatedResult[0].name);
-                for(let i=0; i<formatedResult.length;i++){
-                    blocResultats.innerHTML += '<div><p class="res">'+formatedResult[i].name+'</p></div>';
-                }
-            }
-            else{
-                blocResultats.innerHTML += '<p class="info-vide">(Aucun résultat trouvé)</p>';
-            }
-            console.log(result);
-        }else{
-            gifAttente.style.display = 'none';
-    
-            blocResultats.innerHTML += '<p class="info-vide">(Erreur lors de la recherche)</p>';
+    const apiResult=await api_request_character();
+    gifAttente.style.display = 'none';
+    if(apiResult.length>0 & apiResult!=0){
+        console.log(apiResult[0].name);
+        for(let i=0; i<apiResult.length;i++){
+            blocResultats.innerHTML += '<div><p class="res" onclick="redirectToDetails('+apiResult[i].id+')">'+apiResult[i].name+'</p></div>';
         }
-    }catch{
-        gifAttente.style.display = 'none';
-        blocResultats.innerHTML += '<p class="info-vide">(Erreur lors de la recherche)</p>';
     }
-
-
+    else{
+        blocResultats.innerHTML += '<p class="info-vide">(Aucun résultat trouvé)</p>';
+    }
+    console.log(apiResult);
 }
 
 function addFavoris(){
@@ -81,6 +76,28 @@ function loadFavoris(){
         const section_favoris=document.getElementById('section-favoris');
         section_favoris.innerHTML += '<p id="aucun-favoris" class="info-vide">(Aucune recherche favorite)</p>';
     }
+}
+
+
+function redirectToDetails(characterId) {
+    // Rediriger vers la page de détails avec l'ID du personnage dans l'URL
+    window.location.href = `details.html?id=${characterId}`;
+}
+
+async function fetchCharacterDetails() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const characterId = urlParams.get('id'); // Récupérer l'ID du personnage depuis l'URL
+
+    const character = await api_request_character('id',characterId);
+    console.log(character);
+
+    const detailsContainer = document.getElementById('characterDetails');
+    detailsContainer.innerHTML = `
+        <h2>${character.name}</h2>
+        <p>${character.description}</p>
+        <p>Rôle : ${character.role}</p>
+        <p>Prime : ${character.bounty}</p>
+    `;
 }
 
 function createBubble() {

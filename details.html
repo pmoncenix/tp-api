@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="fr" dir="ltr">
+  <head>
+    <title>Recherche d'offres d'emploi</title>
+    <meta charset="utf-8" />
+    <link rel="shortcut icon" type="image/x-icon" href="favicon-js.ico" />
+    <link rel="stylesheet" href="styles.css" />
+    <script src="script.js"></script>
+  </head>
+
+  <body onload="fetchCharacterDetails()">
+    <div id="bubble-container"></div>
+    <header>
+      <div class="header-top">
+        <img src="images/logo_API.png" alt="Logo One Piece" class="Logo" draggable="false">
+        <h1>Recherche d'informations sur One Piece</h1>
+      </div>
+      
+      <p id="explication">
+        Cette page permet de rechercher des informations via l'API publique
+        de <a href="https://www.freepublicapis.com/one-piece-api" target="_blank">One Piece API</a>.<br />
+        Saisir le nom d'un personnage, d'un équipage, ... pour rechercher les informations
+        correspondantes, et enregistrer vos recherches favorites pour les
+        retrouver facilement.
+      </p>
+    </header>
+    <hr />
+
+    <main id="conteneur">
+      <!-- Section de recherche (avec résultats) -->
+      <section id="section-recherche">
+        <div id="bloc-recherche">
+          <!-- Champ de recherche -->
+          <input type="text" id="research_bar" placeholder="Que cherchez-vous ?" value="barbe" />
+
+          <!-- Boutons -->
+          <button
+            id="btn-lancer-recherche"
+            type="button"
+            class="btn_clicable"
+            title="Lancer la recherche"
+            onclick="api_request()"
+          >
+            <!-- Icone Loupe (provenant de flaticon.com) -->
+            <img src="images/loupe.svg" alt="Loupe pour recherche" width="22" />
+          </button>
+
+          <button
+            id="btn-favoris"
+            type="button"
+            title="Ajouter la recherche aux favoris"
+            onclick="addFavoris()"
+
+          >
+            <!-- Icone étoile vide
+							(qui indique que la recherche ne fait pas partie des favoris) -->
+            <img src="images/etoile-vide.svg" alt="Etoile vide" width="22" />
+
+            <!-- Icone étoile pleine
+								(qui indique que la recherche fait partie des favoris) -->
+            <!-- <img src="images/etoile-pleine.svg" alt="Etoile pleine" width="22" > -->
+
+            <!-- (Les 2 icones d'étoile provenant de flaticon.com) -->
+          </button>
+        </div>
+
+        <!-- Résultats de recherche -->
+        <div id="bloc-gif-attente">
+          <img
+            src="images/attente-ajax.gif"
+            alt="GIF Attente de résultats"
+            width="50"
+          />
+        </div>
+        <div id="characterDetails">
+        </div>
+      </section>
+
+      <!-- Section de séparation (avec la bordure verte) -->
+      <section id="section-separation"></section>
+
+      <!-- Section des recherches favorites -->
+      <section id="section-favoris">
+        <h2>Recherches favorites</h2>
+        <p>
+          Cliquer sur une recherche favorite ci-dessus pour relancer celle-ci :
+        </p>
+        <ul id="liste-favoris">
+        </ul>
+        <p class="info-vide">(Aucune recherche favorite)</p>
+      </section>
+    </main>
+  </body>
+  
+</html>
