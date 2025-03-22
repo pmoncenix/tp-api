@@ -25,7 +25,7 @@ async function api_request(param=document.getElementById('research_bar').value){
             if(formatedResult.length>0){
                 console.log(formatedResult[0].name);
                 for(let i=0; i<formatedResult.length;i++){
-                    blocResultats.innerHTML += '<p class="res">'+formatedResult[i].name+'</p>';
+                    blocResultats.innerHTML += '<div><p class="res">'+formatedResult[i].name+'</p></div>';
                 }
             }
             else{
@@ -48,6 +48,10 @@ async function api_request(param=document.getElementById('research_bar').value){
 function addFavoris(){
     console.log("addFavortis()");
     const research_bar=document.getElementById('research_bar');
+    if(localStorage.length==0){
+        const pAucunFavoris = document.getElementById('aucun-favoris');
+        pAucunFavoris.remove();
+    }
     if(localStorage.getItem(research_bar.value)==null){
         localStorage.setItem(research_bar.value,research_bar.value);
         const liste_favoris=document.getElementById('liste-favoris');
@@ -60,6 +64,10 @@ function deleteFavoris(favoris){
     const htmlFavoris=document.getElementById(favoris);
     htmlFavoris.remove();
     localStorage.removeItem(favoris);
+    if(localStorage.length==0){
+        const section_favoris=document.getElementById('section-favoris');
+        section_favoris.innerHTML += '<p id="aucun-favoris" class="info-vide">(Aucune recherche favorite)</p>';
+    }
 }
 
 function loadFavoris(){
@@ -69,6 +77,10 @@ function loadFavoris(){
         liste_favoris.innerHTML += '<li id='+value+'><span title="Cliquer pour relancer la recherche" onclick="api_request(this.textContent)">'+value+'</span><img src="images/croix.svg" alt="Icone pour supprimer le favori" width="15" title="Cliquer pour supprimer le favori" onclick="deleteFavoris(this.parentNode.querySelector(\'span\').textContent)"/>';
         console.log(`Clé : ${key}, Valeur : ${value}`);
     });
+    if(localStorage.length==0){
+        const section_favoris=document.getElementById('section-favoris');
+        section_favoris.innerHTML += '<p id="aucun-favoris" class="info-vide">(Aucune recherche favorite)</p>';
+    }
 }
 
 function createBubble() {
