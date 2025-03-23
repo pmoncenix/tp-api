@@ -187,6 +187,11 @@ async function fetchCharacterDetails() {
             fruitType = character.fruit.type || "Non disponible";
         }
 
+        let fruitImage = "";
+        if (character.fruit && character.fruit.filename) {
+            fruitImage = `<img src="${character.fruit.filename}" alt="${fruit}" style="max-width: 200px; height: auto;">`;
+        }
+
         const detailsContainer = document.getElementById('characterDetails');
         detailsContainer.innerHTML = `
             <h2>${character.name || "Nom inconnu"}</h2>
@@ -200,6 +205,7 @@ async function fetchCharacterDetails() {
             <p>Equipage de yonko : ${yonko}</p>
             <p>Fruit : ${fruit}</p>
             <p>Type du fruit : ${fruitType}</p>
+            <p> ${fruitImage} </p>
         `;
     } catch (error) {
         console.error("Erreur de récupération des détails du personnage :", error);
