@@ -19,24 +19,51 @@ async function api_request_character(way='name',param=document.getElementById('r
     }
 }
 
-async function api_request(){
+async function api_request() {
     const blocResultats = document.getElementById('bloc-resultats');
     blocResultats.innerHTML = '';
     const gifAttente = document.getElementById('bloc-gif-attente');
     gifAttente.style.display = 'block';
-    const apiResult=await api_request_character();
+
+    const apiResult = await api_request_character();
     gifAttente.style.display = 'none';
-    if(apiResult.length>0 && apiResult!=0){
+
+    if (apiResult.length > 0 && apiResult != 0) {
         console.log(apiResult[0].name);
-        for(let i=0; i<apiResult.length;i++){
-            blocResultats.innerHTML += '<div><p class="res" onclick="redirectToDetails('+apiResult[i].id+')">'+apiResult[i].name+'</p></div>';
+        let resultsArray = [];
+
+        for (let i = 0; i < apiResult.length; i++) {
+            const characterHTML = `<div><p class="res" onclick="redirectToDetails(${apiResult[i].id})">${apiResult[i].name}</p></div>`;
+            blocResultats.innerHTML += characterHTML;
+            resultsArray.push({ id: apiResult[i].id, name: apiResult[i].name });
         }
-    }
-    else{
+
+        // Stocker les résultats dans sessionStorage
+        sessionStorage.setItem('lastSearchResults', JSON.stringify(resultsArray));
+    } else {
         blocResultats.innerHTML += '<p class="info-vide">(Aucun résultat trouvé)</p>';
     }
+
     console.log(apiResult);
 }
+
+// Fonction pour restaurer les résultats si disponibles
+function restorePreviousResults() {
+    const lastResults = sessionStorage.getItem('lastSearchResults');
+    if (lastResults) {
+        const blocResultats = document.getElementById('bloc-resultats');
+        blocResultats.innerHTML = '';
+        const resultsArray = JSON.parse(lastResults);
+
+        resultsArray.forEach(character => {
+            blocResultats.innerHTML += `<div><p class="res" onclick="redirectToDetails(${character.id})">${character.name}</p></div>`;
+        });
+    }
+}
+
+// Charger les anciens résultats au chargement de la page
+document.addEventListener("DOMContentLoaded", restorePreviousResults);
+
 
 function addFavoris(){
     console.log("addFavortis()");
