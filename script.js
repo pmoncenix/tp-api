@@ -177,6 +177,10 @@ async function fetchCharacterDetails() {
             yonko = character.crew.is_yonko ? "Oui" : "Non";
         }
 
+        let fruit = "Aucun fruit";
+        if (character.fruit && typeof character.fruit === 'object') {
+            fruit = character.fruit.name || "Aucun fruit";
+        }
 
         const detailsContainer = document.getElementById('characterDetails');
         detailsContainer.innerHTML = `
@@ -189,6 +193,7 @@ async function fetchCharacterDetails() {
             <p>Job : ${character.job || "Non disponible"}</p>
             <p>Status : ${character.status || "Non disponible"}</p>
             <p>Equipage de yonko : ${yonko}</p>
+            <p>Fruit : ${fruit}</p>
         `;
     } catch (error) {
         console.error("Erreur de récupération des détails du personnage :", error);
