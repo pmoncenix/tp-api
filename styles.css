@@ -124,6 +124,10 @@ header {
   content: "\21E8\00A0";
 }
 
+#bloc-resultats p.res:hover {
+  color: var(--main-green);
+}
+
 #liste-favoris li {
   display: flex;
   align-items: center;
