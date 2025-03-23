@@ -23,47 +23,16 @@
         correspondantes, et enregistrer vos recherches favorites pour les
         retrouver facilement.
       </p>
+
+      <!-- Ajout du bouton retour -->
+      <button id="btn-retour" onclick="window.history.back()" class="btn_retour">
+        Retour
+      </button>
     </header>
     <hr />
 
     <main id="conteneur">
       <!-- Section de recherche (avec résultats) -->
-      <section id="section-recherche">
-        <div id="bloc-recherche">
-          <!-- Champ de recherche -->
-          <input type="text" id="research_bar" placeholder="Que cherchez-vous ?" value="barbe" />
-
-          <!-- Boutons -->
-          <button
-            id="btn-lancer-recherche"
-            type="button"
-            class="btn_clicable"
-            title="Lancer la recherche"
-            onclick="api_request()"
-          >
-            <!-- Icone Loupe (provenant de flaticon.com) -->
-            <img src="images/loupe.svg" alt="Loupe pour recherche" width="22" />
-          </button>
-
-          <button
-            id="btn-favoris"
-            type="button"
-            title="Ajouter la recherche aux favoris"
-            onclick="addFavoris()"
-
-          >
-            <!-- Icone étoile vide
-							(qui indique que la recherche ne fait pas partie des favoris) -->
-            <img src="images/etoile-vide.svg" alt="Etoile vide" width="22" />
-
-            <!-- Icone étoile pleine
-								(qui indique que la recherche fait partie des favoris) -->
-            <!-- <img src="images/etoile-pleine.svg" alt="Etoile pleine" width="22" > -->
-
-            <!-- (Les 2 icones d'étoile provenant de flaticon.com) -->
-          </button>
-        </div>
-
         <!-- Résultats de recherche -->
         <div id="bloc-gif-attente">
           <img
