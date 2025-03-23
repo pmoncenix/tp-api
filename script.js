@@ -1,9 +1,7 @@
 async function api_request_character(way='name',param=document.getElementById('research_bar').value){
     const specialChars = /[^a-zA-Z0-9]/g; 
     if(param.match(specialChars)){
-        param.replace(specialChars, (char) => {
-            return `(${char.charCodeAt(0)})`;  // Remplace le caractère spécial par son code ASCII
-          });
+        param = param.replace(specialChars, (char) => `(${char.charCodeAt(0)})`);
     }
     let url=''
     if(way=='id'){
@@ -28,7 +26,7 @@ async function api_request(){
     gifAttente.style.display = 'block';
     const apiResult=await api_request_character();
     gifAttente.style.display = 'none';
-    if(apiResult.length>0 & apiResult!=0){
+    if(apiResult.length>0 && apiResult!=0){
         console.log(apiResult[0].name);
         for(let i=0; i<apiResult.length;i++){
             blocResultats.innerHTML += '<div><p class="res" onclick="redirectToDetails('+apiResult[i].id+')">'+apiResult[i].name+'</p></div>';
@@ -50,7 +48,7 @@ function addFavoris(){
     if(localStorage.getItem(research_bar.value)==null){
         localStorage.setItem(research_bar.value,research_bar.value);
         const liste_favoris=document.getElementById('liste-favoris');
-        liste_favoris.innerHTML += '<li id='+research_bar.value+'><span title="Cliquer pour relancer la recherche" onclick="api_request(this.textContent)">'+research_bar.value+'</span><img src="images/croix.svg" alt="Icone pour supprimer le favori" width="15" title="Cliquer pour supprimer le favori" onclick="deleteFavoris(this.parentNode.querySelector(\'span\').textContent)"/>';
+        liste_favoris.innerHTML += '<li id="${research_bar.value}"><span title="Cliquer pour relancer la recherche" onclick="api_request(this.textContent)">'+research_bar.value+'</span><img src="images/croix.svg" alt="Icone pour supprimer le favori" width="15" title="Cliquer pour supprimer le favori" onclick="deleteFavoris(this.parentNode.querySelector(\'span\').textContent)"/>';
     }
 }
 
@@ -67,7 +65,7 @@ function deleteFavoris(favoris){
 
 function loadFavoris() {
     const liste_favoris = document.getElementById('liste-favoris');
-    liste_favoris.innerHTML = ""; // Nettoie la liste avant de recharger
+    liste_favoris.innerHTML = "";
 
     Object.keys(localStorage).forEach(function (key) {
         const value = localStorage.getItem(key);
@@ -106,13 +104,13 @@ function loadFavoris() {
 }
 
 function selectFavoris(favoris) {
-    console.log(`Sélection du favori : ${favoris}`); // Vérification console
+    console.log(`Sélection du favori : ${favoris}`);
     const researchBar = document.getElementById('research_bar');
     
     if (researchBar) {
         researchBar.value = favoris;
-        console.log("Recherche mise à jour :", researchBar.value); // Vérifier la mise à jour
-        api_request(); // Lancer la recherche
+        console.log("Recherche mise à jour :", researchBar.value);
+        api_request();
     } else {
         console.error("La barre de recherche n'a pas été trouvée !");
     }

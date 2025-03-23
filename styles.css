@@ -124,6 +124,17 @@ header {
   content: "\21E8\00A0";
 }
 
+#liste-favoris li {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px; /* Si tu veux de l'espace entre les éléments */
+}
+
+#liste-favoris img {
+  margin-left: 10px; /* Ajoute de l'espace à gauche de l'image */
+  cursor: pointer;
+}
+
 #section-separation {
   border-left: 2px dashed var(--main-green);
   margin: 0 20px;
