@@ -116,26 +116,23 @@ header {
   text-align: center;
 }
 
-#bloc-resultats div {
-  cursor: pointer;
-}
-
 #bloc-resultats p.res::before {
   content: "\21E8\00A0";
 }
 
 #bloc-resultats p.res:hover {
   color: var(--main-green);
+  cursor: pointer;
 }
 
 #liste-favoris li {
   display: flex;
   align-items: center;
-  margin-bottom: 10px; /* Si tu veux de l'espace entre les éléments */
+  margin-bottom: 10px;
 }
 
 #liste-favoris img {
-  margin-left: 10px; /* Ajoute de l'espace à gauche de l'image */
+  margin-left: 10px;
   cursor: pointer;
 }
 
