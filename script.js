@@ -68,14 +68,36 @@ document.addEventListener("DOMContentLoaded", restorePreviousResults);
 function addFavoris(){
     console.log("addFavortis()");
     const research_bar=document.getElementById('research_bar');
-    if(localStorage.length==0){
+    if(localStorage.length==0 & research_bar.value.length!=0){
         const pAucunFavoris = document.getElementById('aucun-favoris');
         pAucunFavoris.remove();
     }
-    if(localStorage.getItem(research_bar.value)==null){
+    if(localStorage.getItem(research_bar.value)==null & research_bar.value.length!=0){
         localStorage.setItem(research_bar.value,research_bar.value);
         const liste_favoris=document.getElementById('liste-favoris');
-        liste_favoris.innerHTML += '<li id="${research_bar.value}"><span title="Cliquer pour relancer la recherche" onclick="api_request(this.textContent)">'+research_bar.value+'</span><img src="images/croix.svg" alt="Icone pour supprimer le favori" width="15" title="Cliquer pour supprimer le favori" onclick="deleteFavoris(this.parentNode.querySelector(\'span\').textContent)"/>';
+        const newItem = document.createElement('li');
+        newItem.id = research_bar.value;
+    
+        const span = document.createElement('span');
+        span.textContent = research_bar.value;
+        span.title = "Cliquer pour relancer la recherche";
+        span.onclick = function() {
+            api_request(this.textContent);
+        };
+    
+        const img = document.createElement('img');
+        img.src = "images/croix.svg";
+        img.width = 15;
+        img.alt = "Icone pour supprimer le favori";
+        img.title = "Cliquer pour supprimer le favori";
+        img.onclick = function() {
+            deleteFavoris(this.parentNode.querySelector('span').textContent);
+        };
+    
+        newItem.appendChild(span);
+        newItem.appendChild(img);
+    
+        liste_favoris.appendChild(newItem);
     }
 }
 
@@ -126,7 +148,7 @@ function loadFavoris() {
     });
 
     if (localStorage.length === 0) {
-        document.getElementById('section-favoris').innerHTML = '<p id="aucun-favoris" class="info-vide">(Aucune recherche favorite)</p>';
+        document.getElementById('liste-favoris').innerHTML = '<p id="aucun-favoris" class="info-vide">(Aucune recherche favorite)</p>';
     }
 }
 
