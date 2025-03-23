@@ -33,7 +33,7 @@ async function api_request() {
         let resultsArray = [];
 
         for (let i = 0; i < apiResult.length; i++) {
-            const characterHTML = `<div><p class="res" onclick="redirectToDetails(${apiResult[i].id})">${apiResult[i].name}</p></div>`;
+            const characterHTML = `<p class="res" onclick="redirectToDetails(${apiResult[i].id})">${apiResult[i].name}</p>`;
             blocResultats.innerHTML += characterHTML;
             resultsArray.push({ id: apiResult[i].id, name: apiResult[i].name });
         }
