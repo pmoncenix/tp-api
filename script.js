@@ -174,7 +174,7 @@ async function fetchCharacterDetails() {
 
         let yonko = "Non disponible";
         if (character.crew && typeof character.crew === 'object') {
-            yonko = character.crew.is_yonko ? "Oui" : "Non";
+            yonko = character.crew.is_yonko === 'true' ? "Oui" : "Non";
         }
 
         let fruit = "Aucun fruit";
@@ -182,11 +182,16 @@ async function fetchCharacterDetails() {
             fruit = character.fruit.name || "Aucun fruit";
         }
 
+        let fruitType = "Non disponible";
+        if (character.fruit && typeof character.fruit === 'object') {
+            fruitType = character.fruit.type || "Non disponible";
+        }
+
         const detailsContainer = document.getElementById('characterDetails');
         detailsContainer.innerHTML = `
             <h2>${character.name || "Nom inconnu"}</h2>
             <p>${character.description || "Description non disponible"}</p>
-            <p>Rôle : ${character.role || "Non disponible"}</p>
+            <p>Rôle : ${character.job || "Non disponible"}</p>
             <p>Prime : ${character.bounty ? character.bounty + " Berries" : "Non disponible"}</p>
             <p>Équipage : ${crewName}</p>
             <p>Âge : ${character.age || "Non disponible"}</p>
@@ -194,6 +199,7 @@ async function fetchCharacterDetails() {
             <p>Status : ${character.status || "Non disponible"}</p>
             <p>Equipage de yonko : ${yonko}</p>
             <p>Fruit : ${fruit}</p>
+            <p>Type du fruit : ${fruitType}</p>
         `;
     } catch (error) {
         console.error("Erreur de récupération des détails du personnage :", error);
