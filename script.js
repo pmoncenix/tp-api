@@ -88,16 +88,38 @@ async function fetchCharacterDetails() {
     const urlParams = new URLSearchParams(window.location.search);
     const characterId = urlParams.get('id'); // Récupérer l'ID du personnage depuis l'URL
 
-    const character = await api_request_character('id',characterId);
-    console.log(character);
+    if (!characterId) {
+        console.error("Aucun ID de personnage trouvé dans l'URL.");
+        return;
+    }
 
-    const detailsContainer = document.getElementById('characterDetails');
-    detailsContainer.innerHTML = `
-        <h2>${character.name}</h2>
-        <p>${character.description}</p>
-        <p>Rôle : ${character.role}</p>
-        <p>Prime : ${character.bounty}</p>
-    `;
+    try {
+        const character = await api_request_character('id', characterId);
+        
+        if (!character || character.error) {
+            console.error("Erreur lors de la récupération du personnage :", character?.error || "Personnage non trouvé.");
+            document.getElementById('characterDetails').innerHTML = "<p>Personnage introuvable.</p>";
+            return;
+        }
+
+        // Vérifier si l'équipage est un objet et récupérer son nom
+        let crewName = "Aucun équipage connu";
+        if (character.crew && typeof character.crew === 'object') {
+            crewName = character.crew.name || "Nom d'équipage inconnu";
+        }
+
+        const detailsContainer = document.getElementById('characterDetails');
+        detailsContainer.innerHTML = `
+            <h2>${character.name || "Nom inconnu"}</h2>
+            <p>${character.description || "Description non disponible"}</p>
+            <p>Rôle : ${character.role || "Non disponible"}</p>
+            <p>Prime : ${character.bounty ? character.bounty + " Berries" : "Non disponible"}</p>
+            <p>Équipage : ${crewName}</p>
+        `;
+    } catch (error) {
+        console.error("Erreur de récupération des détails du personnage :", error);
+        document.getElementById('characterDetails').innerHTML = "<p>Une erreur est survenue.</p>";
+    }
 }
 
 function createBubble() {
