@@ -204,9 +204,9 @@ async function fetchCharacterDetails() {
             fruit = character.fruit.name || "Aucun fruit";
         }
 
-        let fruitType = "Non disponible";
+        let fruitType = "Aucun fruit";
         if (character.fruit && typeof character.fruit === 'object') {
-            fruitType = character.fruit.type || "Non disponible";
+            fruitType = character.fruit.type || "Aucun fruit";
         }
 
         let fruitImage = "";
