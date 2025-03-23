@@ -65,19 +65,58 @@ function deleteFavoris(favoris){
     }
 }
 
-function loadFavoris(){
-    const liste_favoris=document.getElementById('liste-favoris');
-    Object.keys(localStorage).forEach(function(key) {
+function loadFavoris() {
+    const liste_favoris = document.getElementById('liste-favoris');
+    liste_favoris.innerHTML = ""; // Nettoie la liste avant de recharger
+
+    Object.keys(localStorage).forEach(function (key) {
         const value = localStorage.getItem(key);
-        liste_favoris.innerHTML += '<li id='+value+'><span title="Cliquer pour relancer la recherche" onclick="api_request(this.textContent)">'+value+'</span><img src="images/croix.svg" alt="Icone pour supprimer le favori" width="15" title="Cliquer pour supprimer le favori" onclick="deleteFavoris(this.parentNode.querySelector(\'span\').textContent)"/>';
-        console.log(`Clé : ${key}, Valeur : ${value}`);
+
+        // Vérification console pour voir les favoris chargés
+        console.log(`Favori chargé : ${value}`);
+
+        // Créer l'élément li et span dynamiquement
+        const li = document.createElement('li');
+        li.id = value;
+
+        const span = document.createElement('span');
+        span.textContent = value;
+        span.title = "Cliquer pour relancer la recherche";
+        span.onclick = function () {
+            selectFavoris(value);
+        };
+
+        const img = document.createElement('img');
+        img.src = "images/croix.svg";
+        img.alt = "Icone pour supprimer le favori";
+        img.width = 15;
+        img.title = "Cliquer pour supprimer le favori";
+        img.onclick = function () {
+            deleteFavoris(value);
+        };
+
+        li.appendChild(span);
+        li.appendChild(img);
+        liste_favoris.appendChild(li);
     });
-    if(localStorage.length==0){
-        const section_favoris=document.getElementById('section-favoris');
-        section_favoris.innerHTML += '<p id="aucun-favoris" class="info-vide">(Aucune recherche favorite)</p>';
+
+    if (localStorage.length === 0) {
+        document.getElementById('section-favoris').innerHTML = '<p id="aucun-favoris" class="info-vide">(Aucune recherche favorite)</p>';
     }
 }
 
+function selectFavoris(favoris) {
+    console.log(`Sélection du favori : ${favoris}`); // Vérification console
+    const researchBar = document.getElementById('research_bar');
+    
+    if (researchBar) {
+        researchBar.value = favoris;
+        console.log("Recherche mise à jour :", researchBar.value); // Vérifier la mise à jour
+        api_request(); // Lancer la recherche
+    } else {
+        console.error("La barre de recherche n'a pas été trouvée !");
+    }
+}
 
 function redirectToDetails(characterId) {
     // Rediriger vers la page de détails avec l'ID du personnage dans l'URL

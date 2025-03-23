@@ -116,6 +116,10 @@ header {
   text-align: center;
 }
 
+#bloc-resultats div {
+  cursor: pointer;
+}
+
 #bloc-resultats p.res::before {
   content: "\21E8\00A0";
 }
