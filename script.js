@@ -160,58 +160,47 @@ const apiConfig = {
     window.location.href = `details.html?category=${category}&id=${id}`;
   }
   
-  // Fonction pour afficher les détails complets
-  async function displayFullDetails() {
-    const urlParams = new URLSearchParams(window.location.search);
-    const category = urlParams.get('category');
-    const id = urlParams.get('id');
-  
-    if (!category || !id) {
-      document.getElementById('characterDetails').innerHTML = '<p>Paramètres manquants</p>';
-      return;
-    }
-  
-    try {
-      let details;
-      const endpoint = apiConfig[category];
-      
-      // Utilisation du nouvel endpoint 'single' pour les requêtes par ID
-      const apiUrl = endpoint.single ? endpoint.single(id) : `https://api.api-onepiece.com/v2/${endpoint.url}/${id}`;
-      
-      const response = await fetch(apiUrl);
-      
-      if (!response.ok) {
-        // Tentative de fallback pour les épées si la première requête échoue
-        if (category === 'swords') {
-          const fallbackResponse = await fetch(`https://api.api-onepiece.com/v2/swords/en/${id}`);
-          if (!fallbackResponse.ok) throw new Error(`Erreur ${response.status}: ${response.statusText}`);
-          details = await fallbackResponse.json();
-        } else {
-          throw new Error(`Erreur ${response.status}: ${response.statusText}`);
+    // Affiche les détails complets d'un élément sur la page de détails
+    async function displayFullDetails() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const category = urlParams.get('category');
+        const id = urlParams.get('id');
+
+        if (!category || !id) {
+            document.getElementById('characterDetails').innerHTML = '<p>Paramètres manquants</p>';
+            return;
         }
-      } else {
-        details = await response.json();
-      }
-  
-      if (!details) throw new Error("Détails non trouvés");
-  
-      // Debug: Afficher les données reçues dans la console
-      console.log(`Détails ${category}:`, details);
-  
-      const detailsContainer = document.getElementById('characterDetails');
-      detailsContainer.innerHTML = generateDetailsHTML(category, details);
-  
-    } catch (error) {
-      console.error("Erreur:", error);
-      document.getElementById('characterDetails').innerHTML = `
-        <div class="error-message">
-          <p>Erreur lors du chargement des détails</p>
-          <p class="error-detail">${error.message}</p>
-          ${category === 'swords' ? '<p>Essayez de rechercher à nouveau cette épée</p>' : ''}
-        </div>
-      `;
+
+        try {
+            const endpoint = apiConfig[category];
+            const apiUrl = `https://api.api-onepiece.com/v2/${endpoint.url}/${id}`;
+            
+            const response = await fetch(apiUrl);
+            
+            if (!response.ok) {
+                throw new Error(`Erreur ${response.status}: ${response.statusText}`);
+            }
+
+            const details = await response.json();
+
+            if (!details) throw new Error("Détails non trouvés");
+
+            // Debug: Afficher les données reçues dans la console
+            console.log(`Détails ${category}:`, details);
+
+            const detailsContainer = document.getElementById('characterDetails');
+            detailsContainer.innerHTML = generateDetailsHTML(category, details);
+
+        } catch (error) {
+            console.error("Erreur:", error);
+            document.getElementById('characterDetails').innerHTML = `
+                <div class="error-message">
+                    <p>Erreur lors du chargement des détails</p>
+                    <p class="error-detail">${error.message}</p>
+                </div>
+            `;
+        }
     }
-  }
   
   // Génère le HTML des détails selon la catégorie
   function generateDetailsHTML(category, data) {
