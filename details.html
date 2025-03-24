@@ -1,49 +1,31 @@
 <!DOCTYPE html>
 <html lang="fr" dir="ltr">
   <head>
-    <title>Character's details</title>
+    <title>Détails - One Piece</title>
     <meta charset="utf-8" />
     <link rel="shortcut icon" type="image/x-icon" href="onepiece-icon.ico" />
     <link rel="stylesheet" href="styles.css" />
     <script src="script.js"></script>
   </head>
 
-  <body onload="fetchCharacterDetails()">
+  <body onload="displayFullDetails()">
     <div id="bubble-container"></div>
+    
+    <button id="btn-retour" onclick="window.history.back()" class="btn_retour">
+      &#8592; Retour
+    </button>
+
     <header>
       <div class="header-top">
         <img src="images/logo_API.png" alt="Logo One Piece" class="Logo" draggable="false">
-        <h1>Détails du personnage</h1>
+        <h1>Détails</h1>
       </div>
-      
-      <p id="explication">
-        Cette page permet de rechercher des informations via l'API publique
-        de <a href="https://www.freepublicapis.com/one-piece-api" target="_blank">One Piece API</a>.<br />
-        Saisir le nom d'un personnage pour rechercher les informations
-        correspondantes, et enregistrer vos recherches favorites pour les
-        retrouver facilement.
-      </p>
-
-      <!-- Ajout du bouton retour -->
-      <button id="btn-retour" onclick="window.location.href='index.html'" class="btn_retour">
-        &#8592;
-        Retour
-      </button>
     </header>
     <hr />
 
     <main id="conteneur">
-      <!-- Section de recherche (avec résultats) -->
-        <!-- Résultats de recherche -->
-        <div id="bloc-gif-attente">
-          <img
-            src="images/attente-ajax.gif"
-            alt="GIF Attente de résultats"
-            width="50"
-          />
-        </div>
-        <div id="characterDetails">
-        </div>
+      <section id="section-details">
+        <div id="characterDetails" class="details-container"></div>
       </section>
     </main>
   </body>

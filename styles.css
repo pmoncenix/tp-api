@@ -13,6 +13,7 @@
 
 * {
   color: var(--text-color);
+  font-family: 'Roboto', Arial, sans-serif;
 }
 
 body {
@@ -60,6 +61,25 @@ header {
   display: flex;
   flex: 1;
   margin: 30px auto;
+}
+
+/* Styles pour le menu déroulant */
+.dropdown-container {
+  margin-bottom: 15px;
+}
+
+label {
+  font-size: 16px;
+  margin-right: 10px;
+}
+
+select {
+  padding: 8px;
+  font-size: 16px;
+  border-radius: 5px;
+  border: 1px solid var(--main-green);
+  background-color: var(--almost-black);
+  color: var(--text-color);
 }
 
 #section-recherche {
@@ -168,7 +188,55 @@ header {
   color: var(--main-green);
 }
 
-/* Media-query pour gérer l'affichage sur petit écran */
+/* Styles pour la page de détails */
+#section-details {
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.details-container {
+  padding: 20px;
+  background-color: rgba(52, 73, 94, 0.8);
+  border-radius: 10px;
+}
+
+.details-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 15px;
+  margin-top: 20px;
+}
+
+.detail-item {
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+  background-color: rgba(26, 188, 156, 0.1);
+  border-radius: 5px;
+  border-left: 4px solid var(--main-green);
+}
+
+.detail-item.full-width {
+  grid-column: 1 / -1;
+}
+
+.detail-item.full-width .detail-value {
+  white-space: pre-line;
+  line-height: 1.5;
+}
+
+.detail-label {
+  font-weight: bold;
+  color: var(--main-green);
+  margin-bottom: 5px;
+}
+
+.detail-value {
+  color: var(--text-color);
+}
+
+/* Media queries */
 @media (max-width: 900px) {
   #conteneur {
     flex-direction: column-reverse;
@@ -204,6 +272,7 @@ header {
   }
 }
 
+/* Animation des bulles */
 #bubble-container {
   position: fixed;
   width: 100%;
@@ -243,6 +312,7 @@ header {
   border: none;
   color: var(--text-color);
   cursor: pointer;
+  z-index: 10;
 }
 
 .btn_retour:hover {

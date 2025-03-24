@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="fr" dir="ltr">
   <head>
-    <title>OnePiece Characters</title>
+    <title>OnePiece API</title>
     <meta charset="utf-8" />
     <link rel="shortcut icon" type="image/x-icon" href="onepiece-icon.ico" />
     <link rel="stylesheet" href="styles.css" />
@@ -13,15 +13,14 @@
     <header>
       <div class="header-top">
         <img src="images/logo_API.png" alt="Logo One Piece" class="Logo" draggable="false">
-        <h1>Personnages de One Piece</h1>
+        <h1>One Piece API</h1>
       </div>
       
       <p id="explication">
         Cette page permet de rechercher des informations via l'API publique
-        de <a href="https://api-onepiece.com/en/documentation?ref=freepublicapis.com" target="_blank">One Piece API</a>.<br />
-        Saisir le nom d'un personnage pour rechercher les informations
-        correspondantes, et enregistrer vos recherches favorites pour les
-        retrouver facilement.
+        de <a href="https://api.api-onepiece.com/en/documentation?ref=freepublicapis.com" target="_blank">One Piece API</a>.<br />
+        Sélectionnez une catégorie et saisissez un nom pour obtenir
+        les informations correspondantes.
       </p>
     </header>
     <hr />
@@ -29,9 +28,20 @@
     <main id="conteneur">
       <!-- Section de recherche (avec résultats) -->
       <section id="section-recherche">
+        <!-- Menu déroulant pour la catégorie -->
+        <div class="dropdown-container">
+          <label for="category">Catégorie :</label>
+          <select id="category" onchange="updateSearchPlaceholder()">
+            <option value="characters">Personnages</option>
+            <option value="crews">Équipages</option>
+            <option value="ships">Bateaux</option>
+            <option value="locations">Lieux</option>
+          </select>
+        </div>
+
         <div id="bloc-recherche">
           <!-- Champ de recherche -->
-          <input type="text" id="research_bar" placeholder="Que cherchez-vous ?" value="" />
+          <input type="text" id="research_bar" placeholder="Entrez un nom de personnage" value="" />
 
           <!-- Boutons -->
           <button
@@ -41,7 +51,6 @@
             title="Lancer la recherche"
             onclick="api_request()"
           >
-            <!-- Icone Loupe (provenant de flaticon.com) -->
             <img src="images/loupe.svg" alt="Loupe pour recherche" width="22" />
           </button>
 
@@ -51,17 +60,8 @@
             class="btn_clicable"
             title="Ajouter la recherche aux favoris"
             onclick="addFavoris()"
-
           >
-            <!-- Icone étoile vide
-							(qui indique que la recherche ne fait pas partie des favoris) -->
             <img src="images/etoile-vide.svg" alt="Etoile vide" width="22" />
-
-            <!-- Icone étoile pleine
-								(qui indique que la recherche fait partie des favoris) -->
-            <!-- <img src="images/etoile-pleine.svg" alt="Etoile pleine" width="22" > -->
-
-            <!-- (Les 2 icones d'étoile provenant de flaticon.com) -->
           </button>
         </div>
 
@@ -91,5 +91,4 @@
       </section>
     </main>
   </body>
-  
 </html>
