@@ -21,9 +21,9 @@ const apiConfig = {
   // Placeholders pour la barre de recherche
   const placeholders = {
     characters: "Entrez un nom de personnage (ex: Luffy)",
-    crews: "Entrez un nom d'équipage (ex: Straw Hat)",
+    crews: "Entrez un nom d'équipage (ex: Chapeau de Paille)",
     ships: "Entrez un nom de bateau (ex: Thousand Sunny)", 
-    locations: "Entrez un nom de lieu (ex: Marineford)"
+    locations: "Entrez un nom de lieu (ex: Marine Ford)"
   };
   
   // Mettre à jour le placeholder

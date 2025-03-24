@@ -26,35 +26,37 @@ body {
   margin: 40px auto;
 }
 
+/* Nouveau style pour le header */
+.header-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  margin-bottom: 40px;
+  width: 100%;
+}
+
+.Logo {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 150px;
+  height: auto;
+}
+
 h1 {
   text-align: center;
   font-variant: small-caps;
   font-size: 2.5em;
   color: var(--main-green);
+  margin: 0 auto;
+  flex-grow: 1;
 }
 
 #explication {
   font-size: 1.2em;
-}
-
-header {
-  display: flex;
-  flex-direction: column;
-  gap: 40px;
-}
-
-.header-top {
-  display: flex;
-  gap: 150px;
-  flex-wrap: wrap;
-  justify-content: center;
   text-align: center;
-}
-
-.Logo {
-  width: 100%;
-  max-width: 300px;
-  height: auto;
+  margin-bottom: 40px;
 }
 
 #conteneur {
@@ -252,15 +254,31 @@ select {
   }
 }
 
+@media (max-width: 768px) {
+  .header-container {
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  .Logo {
+    position: static;
+    margin-bottom: 15px;
+  }
+  
+  h1 {
+    width: 100%;
+  }
+}
+
 @media (max-width: 600px) {
   .Logo {
-    width: 80%;
-    max-width: 200px;
+    width: 120px;
   }
 
   #bloc-recherche {
     flex-direction: column;
     align-items: center;
+    min-width: auto;
   }
 
   #bloc-recherche > input[type="text"] {
