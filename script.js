@@ -64,27 +64,53 @@ function restorePreviousResults() {
 // Charger les anciens résultats au chargement de la page
 document.addEventListener("DOMContentLoaded", restorePreviousResults);
 
-
-function addFavoris(){
-    console.log("addFavortis()");
-    const research_bar=document.getElementById('research_bar');
-    if(localStorage.length==0 & research_bar.value.length!=0){
-        const pAucunFavoris = document.getElementById('aucun-favoris');
-        pAucunFavoris.remove();
+function updateFavoriStar() {
+    const researchBar = document.getElementById('research_bar');
+    const btnFavoris = document.getElementById('btn-favoris');
+    const starImg = btnFavoris.querySelector('img');
+    
+    // Vérifier si la valeur actuelle est dans les favoris
+    if (researchBar.value && localStorage.getItem(researchBar.value) !== null) {
+        // Changer en étoile pleine
+        starImg.src = "images/etoile-pleine.svg";
+        starImg.alt = "Etoile pleine";
+    } else {
+        // Changer en étoile vide
+        starImg.src = "images/etoile-vide.svg";
+        starImg.alt = "Etoile vide";
     }
-    if(localStorage.getItem(research_bar.value)==null & research_bar.value.length!=0){
-        localStorage.setItem(research_bar.value,research_bar.value);
-        const liste_favoris=document.getElementById('liste-favoris');
+}
+
+document.addEventListener("DOMContentLoaded", function() {
+    updateFavoriStar();
+    
+    const researchBar = document.getElementById('research_bar');
+    researchBar.addEventListener('input', updateFavoriStar);
+});
+
+function addFavoris() {
+    console.log("addFavoris()");
+    const research_bar = document.getElementById('research_bar');
+    
+    if (localStorage.length == 0 && research_bar.value.length != 0) {
+        const pAucunFavoris = document.getElementById('aucun-favoris');
+        if (pAucunFavoris) pAucunFavoris.remove();
+    }
+    
+    if (localStorage.getItem(research_bar.value) == null && research_bar.value.length != 0) {
+        localStorage.setItem(research_bar.value, research_bar.value);
+        
+        const liste_favoris = document.getElementById('liste-favoris');
         const newItem = document.createElement('li');
         newItem.id = research_bar.value;
-    
+
         const span = document.createElement('span');
         span.textContent = research_bar.value;
         span.title = "Cliquer pour relancer la recherche";
         span.onclick = function() {
-            api_request(this.textContent);
+            selectFavoris(this.textContent);
         };
-    
+
         const img = document.createElement('img');
         img.src = "images/croix.svg";
         img.width = 15;
@@ -93,21 +119,28 @@ function addFavoris(){
         img.onclick = function() {
             deleteFavoris(this.parentNode.querySelector('span').textContent);
         };
-    
+
         newItem.appendChild(span);
         newItem.appendChild(img);
-    
+
         liste_favoris.appendChild(newItem);
+        
+        // Mettre à jour l'étoile après l'ajout
+        updateFavoriStar();
     }
 }
 
-function deleteFavoris(favoris){
+function deleteFavoris(favoris) {
     console.log(favoris);
-    const htmlFavoris=document.getElementById(favoris);
-    htmlFavoris.remove();
+    const htmlFavoris = document.getElementById(favoris);
+    if (htmlFavoris) htmlFavoris.remove();
     localStorage.removeItem(favoris);
-    if(localStorage.length==0){
-        const section_favoris=document.getElementById('section-favoris');
+    
+    // Mettre à jour l'étoile après la suppression
+    updateFavoriStar();
+    
+    if (localStorage.length == 0) {
+        const section_favoris = document.getElementById('section-favoris');
         section_favoris.innerHTML += '<p id="aucun-favoris" class="info-vide">(Aucune recherche favorite)</p>';
     }
 }
