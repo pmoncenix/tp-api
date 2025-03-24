@@ -49,15 +49,17 @@ const apiConfig = {
     gifAttente.style.display = 'block';
   
     try {
-      const results = await fetchData(category, query);
-      gifAttente.style.display = 'none';
-  
-      if (results.length > 0) {
-        displayResults(results, category);
-      } else {
-        blocResultats.innerHTML = '<p class="info-vide">(Aucun résultat trouvé)</p>';
-      }
-    } catch (error) {
+        const results = await fetchData(category, query);
+        gifAttente.style.display = 'none';
+    
+        if (results.length > 0) {
+          displayResults(results, category);
+        } else {
+          blocResultats.innerHTML = '<p class="info-vide">(Aucun résultat trouvé)</p>';
+        }
+        
+        updateFavoriStar();
+      } catch (error) {
       gifAttente.style.display = 'none';
       blocResultats.innerHTML = '<p class="info-vide">(Erreur lors de la recherche)</p>';
       console.error("Erreur API:", error);
@@ -380,9 +382,16 @@ const apiConfig = {
   function updateFavoriStar() {
     const researchBar = document.getElementById('research_bar');
     const btnFavoris = document.getElementById('btn-favoris');
-    const starImg = btnFavoris.querySelector('img');
     
-    if (researchBar.value && localStorage.getItem(researchBar.value) !== null) {
+    if (!researchBar || !btnFavoris) return;
+    
+    const starImg = btnFavoris.querySelector('img');
+    const currentSearch = researchBar.value.trim();
+    
+    // Vérifie si la recherche actuelle est dans les favoris
+    const isFavorite = Object.keys(localStorage).some(key => key === currentSearch);
+    
+    if (isFavorite && currentSearch !== '') {
       starImg.src = "images/etoile-pleine.svg";
       starImg.alt = "Etoile pleine";
     } else {
@@ -461,6 +470,7 @@ const apiConfig = {
     const researchBar = document.getElementById('research_bar');
     if (researchBar) {
       researchBar.value = value;
+      updateFavoriStar();
       api_request();
     }
   }
@@ -497,6 +507,7 @@ const apiConfig = {
     loadFavoris();
     
     const researchBar = document.getElementById('research_bar');
+  if (researchBar) {
     researchBar.addEventListener('input', updateFavoriStar);
     
     researchBar.addEventListener("keypress", function(e) {
@@ -505,7 +516,8 @@ const apiConfig = {
         api_request();
       }
     });
-  });
+  }
+});
   
   // Animation des bulles
   function createBubble() {
