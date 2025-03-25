@@ -415,6 +415,12 @@ function getFavorites() {
       saveFavorites(favorites);
       updateFavoritesList(value);
       updateFavoriStar();
+    }else{
+        deleteFavoris(value);
+        const btnFavoris = document.getElementById('btn-favoris');        
+        const starImg = btnFavoris.querySelector('img');
+        starImg.src = "images/etoile-vide.svg";
+        starImg.alt = "Etoile vide";
     }
   }
   
