@@ -366,14 +366,14 @@ const apiConfig = {
         `<p class="res" onclick="redirectToDetails('${category}', ${item.id})">${item.name}</p>`;
     });
   }
-// Gestion des favoris (version avec drag & drop)
+// Gestion des favoris avec drag & drop
 function getFavorites() {
-    const favorites = localStorage.getItem('favoris');
-    return favorites ? JSON.parse(favorites) : [];
+    const favorites = localStorage.getItem('favoris'); // On récupère les données dans le localStorage
+    return favorites ? JSON.parse(favorites) : []; // On s'assure de renvoyer un objet JSON
   }
   
   function saveFavorites(favorites) {
-    localStorage.setItem('favoris', JSON.stringify(favorites));
+    localStorage.setItem('favoris', JSON.stringify(favorites)); // On enregistre le favoris dans le localStorage
   }
   
   function updateFavoriStar() {
