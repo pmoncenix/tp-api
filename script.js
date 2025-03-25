@@ -366,8 +366,16 @@ const apiConfig = {
         `<p class="res" onclick="redirectToDetails('${category}', ${item.id})">${item.name}</p>`;
     });
   }
+// Gestion des favoris (version avec drag & drop)
+function getFavorites() {
+    const favorites = localStorage.getItem('favoris');
+    return favorites ? JSON.parse(favorites) : [];
+  }
   
-  // Gestion des favoris
+  function saveFavorites(favorites) {
+    localStorage.setItem('favoris', JSON.stringify(favorites));
+  }
+  
   function updateFavoriStar() {
     const researchBar = document.getElementById('research_bar');
     const btnFavoris = document.getElementById('btn-favoris');
@@ -377,8 +385,8 @@ const apiConfig = {
     const starImg = btnFavoris.querySelector('img');
     const currentSearch = researchBar.value.trim();
     
-    // Vérifie si la recherche actuelle est dans les favoris
-    const isFavorite = Object.keys(localStorage).some(key => key === currentSearch);
+    const favorites = getFavorites();
+    const isFavorite = favorites.includes(currentSearch);
     
     if (isFavorite && currentSearch !== '') {
       starImg.src = "images/etoile-pleine.svg";
@@ -395,13 +403,16 @@ const apiConfig = {
     
     if (!value) return;
   
-    if (localStorage.length === 0) {
+    const favorites = getFavorites();
+    
+    if (favorites.length === 0) {
       const pAucunFavoris = document.getElementById('aucun-favoris');
       if (pAucunFavoris) pAucunFavoris.remove();
     }
     
-    if (!localStorage.getItem(value)) {
-      localStorage.setItem(value, value);
+    if (!favorites.includes(value)) {
+      favorites.push(value);
+      saveFavorites(favorites);
       updateFavoritesList(value);
       updateFavoriStar();
     }
@@ -411,6 +422,13 @@ const apiConfig = {
     const listeFavoris = document.getElementById('liste-favoris');
     const newItem = document.createElement('li');
     newItem.id = value;
+    newItem.draggable = true;
+    
+    // Gestion du drag & drop
+    newItem.addEventListener('dragstart', dragStart);
+    newItem.addEventListener('dragover', dragOver);
+    newItem.addEventListener('drop', drop);
+    newItem.addEventListener('dragend', dragEnd);
   
     const span = document.createElement('span');
     span.textContent = value;
@@ -428,12 +446,62 @@ const apiConfig = {
     listeFavoris.appendChild(newItem);
   }
   
+  // Variables globales pour le drag & drop
+  let draggedItem = null;
+  let draggedIndex = -1;
+  
+  function dragStart(e) {
+    draggedItem = this;
+    e.dataTransfer.effectAllowed = 'move';
+    e.dataTransfer.setData('text/html', this.innerHTML);
+    
+    const items = Array.from(this.parentNode.children);
+    draggedIndex = items.indexOf(this);
+  }
+  
+  function dragOver(e) {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+    
+    const targetItem = e.target.closest('li');
+    if (!targetItem || targetItem === draggedItem) return;
+    
+    const items = Array.from(this.parentNode.children);
+    const targetIndex = items.indexOf(targetItem);
+    
+    if (draggedIndex < targetIndex) {
+      this.parentNode.insertBefore(draggedItem, targetItem.nextSibling);
+    } else {
+      this.parentNode.insertBefore(draggedItem, targetItem);
+    }
+    
+    // Mise à jour de l'index pendant le déplacement
+    draggedIndex = items.indexOf(draggedItem);
+  }
+  
+  function drop(e) {
+    e.preventDefault();
+    return false;
+  }
+  
+  function dragEnd() {
+    // Sauvegarder la nouvelle position
+    const listeFavoris = document.getElementById('liste-favoris');
+    const newOrder = Array.from(listeFavoris.children).map(item => item.id);
+    
+    saveFavorites(newOrder);
+    draggedItem = null;
+  }
+  
   function deleteFavoris(value) {
     const item = document.getElementById(value);
     if (item) item.remove();
-    localStorage.removeItem(value);
     
-    if (localStorage.length === 0) {
+    const favorites = getFavorites();
+    const updatedFavorites = favorites.filter(fav => fav !== value);
+    saveFavorites(updatedFavorites);
+    
+    if (updatedFavorites.length === 0) {
       document.getElementById('liste-favoris').innerHTML = 
         '<p id="aucun-favoris" class="info-vide">(Aucune recherche favorite)</p>';
     }
@@ -445,12 +513,14 @@ const apiConfig = {
     const listeFavoris = document.getElementById('liste-favoris');
     listeFavoris.innerHTML = "";
   
-    if (localStorage.length === 0) {
+    const favorites = getFavorites();
+    
+    if (favorites.length === 0) {
       listeFavoris.innerHTML = '<p id="aucun-favoris" class="info-vide">(Aucune recherche favorite)</p>';
       return;
     }
   
-    Object.keys(localStorage).forEach(value => {
+    favorites.forEach(value => {
       updateFavoritesList(value);
     });
   }
@@ -463,6 +533,25 @@ const apiConfig = {
       api_request();
     }
   }
+  
+  // Initialisation
+  document.addEventListener('DOMContentLoaded', () => {
+    loadFavoris();
+    
+    // Style pour le drag & drop
+    const style = document.createElement('style');
+    style.textContent = `
+      #liste-favoris li {
+        cursor: grab;
+        user-select: none;
+      }
+      #liste-favoris li.dragging {
+        opacity: 0.5;
+        cursor: grabbing;
+      }
+    `;
+    document.head.appendChild(style);
+  });
   
   // Requête API spécifique pour les personnages
   async function api_request_character(way = 'name', param = '') {
