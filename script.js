@@ -436,6 +436,12 @@ function getFavorites() {
     newItem.addEventListener('drop', drop);
     newItem.addEventListener('dragend', dragEnd);
   
+    const imgDrag = document.createElement('img');
+    imgDrag.src = "images/burger-icon.png";
+    imgDrag.width = 15;
+    imgDrag.alt = "Déplacer le favori";
+    imgDrag.title = "Déplacer le favori";
+
     const span = document.createElement('span');
     span.textContent = value;
     span.title = "Cliquer pour relancer la recherche";
@@ -448,7 +454,7 @@ function getFavorites() {
     img.title = "Supprimer le favori";
     img.onclick = () => deleteFavoris(value);
   
-    newItem.append(span, img);
+    newItem.append(imgDrag, span, img);
     listeFavoris.appendChild(newItem);
   }
   
