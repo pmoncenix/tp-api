@@ -402,27 +402,32 @@ function getFavorites() {
     const value = researchBar.value.trim();
     
     if (!value) return;
-  
+
     const favorites = getFavorites();
     
     if (favorites.length === 0) {
-      const pAucunFavoris = document.getElementById('aucun-favoris');
-      if (pAucunFavoris) pAucunFavoris.remove();
+        const pAucunFavoris = document.getElementById('aucun-favoris');
+        if (pAucunFavoris) pAucunFavoris.remove();
     }
     
     if (!favorites.includes(value)) {
-      favorites.push(value);
-      saveFavorites(favorites);
-      updateFavoritesList(value);
-      updateFavoriStar();
-    }else{
+        favorites.push(value);
+        saveFavorites(favorites);
+        updateFavoritesList(value);
+        updateFavoriStar();
+        
+        // Mise à jour de l'autocomplétion si besoin
+        if (researchBar.value.trim().length >= 2) {
+            researchBar.dispatchEvent(new Event('input'));
+        }
+    } else {
         deleteFavoris(value);
         const btnFavoris = document.getElementById('btn-favoris');        
         const starImg = btnFavoris.querySelector('img');
         starImg.src = "images/etoile-vide.svg";
         starImg.alt = "Etoile vide";
     }
-  }
+}
   
   function updateFavoritesList(value) {
     const listeFavoris = document.getElementById('liste-favoris');
@@ -506,6 +511,10 @@ function getFavorites() {
   }
   
   function deleteFavoris(value) {
+    const confirmation = confirm("Êtes-vous sûr de vouloir supprimer cette recherche des favoris ?");
+    
+    if (!confirmation) return;
+    
     const item = document.getElementById(value);
     if (item) item.remove();
     
@@ -514,12 +523,18 @@ function getFavorites() {
     saveFavorites(updatedFavorites);
     
     if (updatedFavorites.length === 0) {
-      document.getElementById('liste-favoris').innerHTML = 
-        '<p id="aucun-favoris" class="info-vide">(Aucune recherche favorite)</p>';
+        document.getElementById('liste-favoris').innerHTML = 
+            '<p id="aucun-favoris" class="info-vide">(Aucune recherche favorite)</p>';
     }
     
     updateFavoriStar();
-  }
+    
+    // Mise à jour de l'autocomplétion si besoin
+    const input = document.getElementById("research_bar");
+    if (input.value.trim().length >= 2) {
+        input.dispatchEvent(new Event('input'));
+    }
+}
   
   function loadFavoris() {
     const listeFavoris = document.getElementById('liste-favoris');
@@ -547,23 +562,88 @@ function getFavorites() {
   }
   
   // Initialisation
-  document.addEventListener('DOMContentLoaded', () => {
-    loadFavoris();
-    
-    // Style pour le drag & drop
-    const style = document.createElement('style');
-    style.textContent = `
+document.addEventListener("DOMContentLoaded", function() {
+  // 1. Configuration des styles
+  const style = document.createElement('style');
+  style.textContent = `
+      /* Styles pour les favoris et drag & drop */
       #liste-favoris li {
-        cursor: grab;
-        user-select: none;
+          cursor: grab;
+          user-select: none;
+          padding: 5px;
+          margin: 3px 0;
+          border-radius: 4px;
       }
       #liste-favoris li.dragging {
-        opacity: 0.5;
-        cursor: grabbing;
+          opacity: 0.5;
+          cursor: grabbing;
       }
-    `;
-    document.head.appendChild(style);
-  });
+      
+      /* Styles pour l'autocomplétion */
+      .autocomplete-items {
+          position: absolute;
+          border: 1px solid #2d2d2d;
+          border-radius: 0 0 4px 4px;
+          z-index: 99;
+          top: 100%;
+          left: 0;
+          right: 0;
+          background: #2d2d2d;
+          max-height: 200px;
+          overflow-y: auto;
+          box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      }
+      .autocomplete-items div {
+          padding: 10px;
+          cursor: pointer;
+          border-bottom: 1px solid #eee;
+      }
+      .autocomplete-items strong {
+          color: #0066cc;
+      }
+      #bloc-recherche {
+          position: relative;
+      }
+      
+      /* Style pour le bouton de suppression */
+      #liste-favoris li img[src="images/croix.svg"] {
+          float: right;
+          cursor: pointer;
+          margin-left: 10px;
+      }
+      
+      /* Style pour l'icône de drag */
+      #liste-favoris li img[src="images/burger-icon.png"] {
+          margin-right: 8px;
+          vertical-align: middle;
+      }
+  `;
+  document.head.appendChild(style);
+
+  // 2. Initialisation des composants
+  updateSearchPlaceholder();  // Met à jour le placeholder selon la catégorie
+  restorePreviousResults();   // Restaure les résultats de la dernière recherche
+  updateFavoriStar();         // Met à jour l'état de l'étoile des favoris
+  loadFavoris();              // Charge la liste des favoris
+  setupAutocomplete();        // Initialise le système d'autocomplétion
+
+  // 3. Gestion des événements de la barre de recherche
+  const researchBar = document.getElementById('research_bar');
+  if (researchBar) {
+      // Met à jour l'étoile quand le texte change
+      researchBar.addEventListener('input', function() {
+          updateFavoriStar();
+      });
+      
+      // Lance la recherche quand on appuie sur Entrée
+      researchBar.addEventListener("keypress", function(e) {
+          if (e.key === "Enter") {
+              e.preventDefault();
+              api_request();
+          }
+      });
+  }
+});
   
   // Requête API spécifique pour les personnages
   async function api_request_character(way = 'name', param = '') {
@@ -608,7 +688,51 @@ function getFavorites() {
     });
   }
 });
+
+function setupAutocomplete() {
+  const input = document.getElementById("research_bar");
+  const autocompleteList = document.createElement("div");
+  autocompleteList.id = "autocomplete-list";
+  autocompleteList.className = "autocomplete-items";
+  input.parentNode.appendChild(autocompleteList);
+
+  input.addEventListener("input", function() {
+      const val = this.value.trim();
+      autocompleteList.innerHTML = '';
+      
+      if (val.length < 2) return;
+      
+      const favorites = getFavorites();
+      const suggestions = favorites.filter(item => 
+          item.toLowerCase().includes(val.toLowerCase())
+      );
+      
+      suggestions.slice(0, 8).forEach(item => {
+          const itemElement = document.createElement("div");
+          const matchedText = item.replace(
+              new RegExp(val, 'gi'), 
+              match => `<strong>${match}</strong>`
+          );
+          itemElement.innerHTML = matchedText;
+          
+          itemElement.addEventListener("click", function() {
+              input.value = item;
+              autocompleteList.innerHTML = '';
+              updateFavoriStar();
+              api_request();
+          });
+          
+          autocompleteList.appendChild(itemElement);
+      });
+  });
   
+  document.addEventListener("click", function(e) {
+      if (e.target !== input) {
+          autocompleteList.innerHTML = '';
+      }
+  });
+}
+ 
   // Animation des bulles
   function createBubble() {
     const bubble = document.createElement("div");
